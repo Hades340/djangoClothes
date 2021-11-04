@@ -1,0 +1,38 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.myImg{
+    width: 900px;
+    height: 358px;
+}
+.imgItem{
+    width: 400px;
+    height: 189px;
+}
+.lienlac{
+    background-color: #343a4017;
+    width: 1137px;
+    margin: auto;
+    border-radius: 7%;
+}
+.thongtin1 img{
+
+    width: 40px;
+}
+.thongtin1.d-flex {
+    padding: 30px 80px;
+}
+.tongtien{
+    padding-bottom: 23px;
+    text-align: end;
+    padding-right: 50px;
+}
+.diachi {
+    width: 245px;
+    height: 162px;
+    border-bottom: 1px solid white;
+}
+.tts{
+    margin-left: 203px!important;
+}

@@ -1,0 +1,229 @@
+{% extends 'news/masterLayout.html'%}
+{% block title %}
+    Chi tiết sản phẩm
+{% endblock%}
+{% block mainPage %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<!-- Page Content-->
+<div class="container px-4 px-lg-5">
+    <!-- Heading Row-->
+    <div class="row gx-4 gx-lg-5 align-items-center my-5">
+        {% if productDetail %}
+            {% for item in productDetail%}
+                <div class="col-lg-7"><img class="img-fluid rounded mb-4 mb-lg-0 myImgs" src="{{item.img.url }}" alt="..." /></div>
+                <div class="col-lg-5">
+                    <h1 class="font-weight-light" id="productName">{{item.name}}</h1>
+                    <p>{{item.detail}}</p>
+                    <div class="d-flex">
+                        <div class="mr-4">
+                            <p style="font-weight: bold; font-size: 15px;">Size</p>
+                            <div class="mb-3">
+                                {% for i in item.product_detail_id.all %}
+                                    <button class="btn btn-outline-primary size" id="{{i.size}}">{{i.size}}</button>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    
+                        <div>
+                            <p style="font-weight: bold; font-size: 15px;">Color</p>
+                            <div class="mb-3">
+                                {% for i in item.product_detail_id.all %}
+                                    <button class="btn btn-outline-secondary color" id="{{i.color}}">{{i.color}}</button>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                    <p style="font-weight: bold; font-size: 15px;">Số lượng</p>
+                    <div class="mb-3">
+                        <input type="number"
+                        class="form-control nhap" name="soLuong" id="soLuong" aria-describedby="helpId"  value=1>
+                    </div>
+                    <p style="font-weight: bold; font-size: 15px;">Price : </p>
+                    <p style="font-weight: 300; font-size: 18px;"> <span id="price" class={{item.price}}>{{item.price|floatformat:"0g"}}</span> vnd</p>
+                    <div class="cart-footer mt-4">
+                        <button type="button" class="btn btn-primary byNow"  data-toggle="modal" data-target="#modelId" id="ByNow" idProduct="{{item.id}}">By now</button>
+                        <button type="button" class="btn btn-primary addCart" id="addToCart" idProduct="{{item.id}}">Add to cart</button>
+                    </div>
+                </div>
+            {% endfor%}
+        {% else %}
+            <h3 class="text-center">Sản phẩm này không tồn tại</h3>
+        {% endif %}
+    </div>
+    <!-- Call to Action-->
+    <div class="card text-white bg-secondary my-5 py-4 text-center">
+        <div class="card-body"><p class="text-white m-0">This call to action card is a great place to showcase some important information or display a clever tagline!</p></div>
+    </div>
+
+    <!-- Content Row-->
+    <div class="row gx-4 gx-lg-5">
+        {% if productMore %}
+        {% for item in productMore %}
+        <div class="col-md-4 mb-5">
+            <div class="card h-100">
+                <div class="card-body">
+                    <img class="img-fluid rounded mb-4 mb-lg-0 imgItem" src="{{item.img.url }}" alt="..." />
+                    <h2 class="card-title mt-2">{{item.name}}</h2>
+                    <p class="card-text">{{item.decription}}</p>
+                </div>
+                <div class="card-footer"><a class="btn btn-primary btn-sm" href="{% url 'productDetail' item.id%}">More Info</a></div>
+            </div>
+        </div>
+        {% endfor%}
+        {%else%}
+            <h4 class="text-center mt-4 mb-5"> Hiện chưa có sản phẩm nào tương tự</h4>
+        {% endif%}
+</div>
+<!-- Modal -->
+<div class="modal fade" id="modelId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+                <div class="modal-header">
+                        <h5 class="modal-title">Thông tin đơn hàng</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                    </div>
+            <div class="modal-body">
+                <div class="container-fluid detailPrice">
+                    
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="ThanhToanNgay">Thanh toán</button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .actives{
+        background-color: #007bff;
+        color: white;
+    }
+    .activeColor{
+        background-color: gray;
+        color: white;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+       
+        $(".size").click(function (e) { 
+            e.preventDefault();
+            $(".size").removeClass("actives");
+            $(this).addClass("actives");
+            console.log("chạy rồi nè")
+        });
+        $(".color").click(function (e) { 
+            e.preventDefault();
+            $(".color").removeClass("activeColor");
+            $(this).addClass("activeColor");
+            $(this).removeClass("color");
+            console.log("chạy rồi nè")
+        });
+        $("#ByNow").click(function (e) { 
+            e.preventDefault();
+            console.log("chạy rồi nè");
+            var name= $("#productName").text();
+            var id = $(this).attr("idProduct");
+            var price =$("#price").attr("class");
+            var totalPrice =  price;
+            var color = $(".activeColor").text();
+            var size= $(".actives").text();
+            var num =Number( $(".nhap").val()).toLocaleString();
+            if(size!="" && color!= ""){
+                $(".detailPrice").html(`<table class="table">
+                    <thead>
+                        <tr>
+                            <th>Mã sản phẩm</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Màu sắc</th>
+                            <th>Kích thước</th>
+                            <th>Đơn giá</th>
+                            <th>Số lượng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td scope="row" id="MaSPItem">`+id+`</td>
+                            <td>`+name+`</td>
+                            <td id="mauSacItem">`+color+`</td>
+                            <td id="kichCoItem">`+size+`</td>
+                            <td>`+price+`</td>
+                            <td id="SoLuongItem">`+num.toLocaleString()+`</td>
+                            
+                        </tr>
+                    </tbody>
+                </table>`)
+            }
+            else if(size=="" || color=="")
+            {
+                $(".detailPrice").html(`<b>Bạn chưa điền đầy đủ thông tin sản phẩm</b> `)
+            }
+           
+        });
+
+        $("#addToCart").click(function (e) { 
+            var id = $(this).attr("idProduct");
+            var num =$(".nhap").val();
+            console.log(num);
+            var color = $(".activeColor").text();
+            var size= $(".actives").text();
+            if(id!=""&& num!=""&& color!=""&& size!=""){
+                $.ajax({ 
+                    url: "{% url 'addcart' %}",
+                    type: "POST",
+                    data: {
+                        id:id,
+                        num:num,
+                        color:color,
+                        size:size,
+                        csrfmiddlewaretoken:'{{csrf_token}}'
+                    },
+                    
+                    success: function (response) {
+                        alert(response.success);
+                        console.log(response.success);
+                    }
+                });
+            }
+            else{
+                alert("Bạn chưa chọn màu sắc hoặc kích cỡ sản phẩm");
+            }
+           
+        });
+        $("#ThanhToanNgay").click(function (e) { 
+            var id = $("#MaSPItem").text();
+            var num =$("#SoLuongItem").text();
+            console.log(num);
+            var color = $("#mauSacItem").text();
+            var size= $("#kichCoItem").text();
+            if(id!=""&& num!=""&& color!=""&& size!=""){
+                $.ajax({ 
+                    url: "{% url 'addcart' %}",
+                    type: "POST",
+                    data: {
+                        id:id,
+                        num:num,
+                        color:color,
+                        size:size,
+                        csrfmiddlewaretoken:'{{csrf_token}}'
+                    },
+                    
+                    success: function (response) {
+                       if(response.success == "Thêm sản phẩm vào giỏ hàng thành công"){
+                           window.location="{% url 'pay' %}"
+                       }
+                    }
+                });
+            }
+            else{
+                alert("Bạn chưa chọn màu sắc hoặc kích cỡ sản phẩm");
+            }
+        });
+    });
+    
+</script>
+{% endblock %}

@@ -1,0 +1,12 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.myImg{
+    width: 900px;
+    height: 358px;
+}
+.imgItem{
+    width: 400px;
+    height: 189px;
+}
